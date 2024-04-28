@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Cover Letter</title>
+    <style>
+        /* CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+            /* Adjusted header color */
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        textarea {
+            width: calc(100% - 40px);
+            height: 200px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .generated-cover-letter {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .generated-cover-letter h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .generated-cover-letter p {
+            white-space: pre-line;
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+
+        .copy-cut-buttons {
+            text-align: right;
+        }
+
+        .copy-cut-buttons button {
+            margin-left: 10px;
+        }
+    </style>
+    <script>
+        // JavaScript code here
+        function refreshCoverLetter() {
+            location.reload();
+        }
+
+        function copyAllCoverLetter() {
+            var generatedCoverLetter = document.querySelector('.generated-cover-letter');
+            var tempInput = document.createElement('textarea');
+            tempInput.value = generatedCoverLetter.innerText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('Entire cover letter copied to clipboard!');
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Custom Cover Letter Generator</h1> <!-- Adjusted header -->
+        <form action="" method="post">
+            {% csrf_token %}
+            <textarea name="project_description" placeholder="Enter project description"></textarea>
+            <button class="button" type="submit">Submit</button>
+        </form>
+
+        <div class="copy-cut-buttons">
+            <button class="button" onclick="refreshCoverLetter()">Refresh</button>
+            <button class="button" onclick="copyAllCoverLetter()">Copy All</button>
+        </div>
+
+        {% if first_paragraph %}
+        <div class="generated-cover-letter">
+            <h2>Generated Cover Letter:</h2>
+            <p>Hello Hiring Manager,</p> <br>
+            <p>I hope this message finds you well. <br>
+                {{first_paragraph|linebreaks }}</p><br>{{second_paragraph|linebreaks }}</p> <br><br>
+            <p>Best Regards, <br>[Your Name]</p> <!-- Adjusted ending line -->
+        </div>
+        {% endif %}
+    </div>
+</body>
+
+</html>

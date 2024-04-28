@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            height: 100vh;
+            /* Ensure full viewport height */
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .navbar {
+            background-color: #0a4bee;
+            /* Dark background color */
+            color: #0c0b0b;
+            /* Text color */
+            text-align: center;
+            padding: 20px 0;
+            /* Add padding to top and bottom */
+            width: 100%;
+            /* Full width */
+            position: fixed;
+            /* Fixed position */
+            top: 0;
+            /* Stick to the top */
+            z-index: 999;
+            /* Ensure it's on top of other elements */
+        }
+
+        .navbar a {
+            color: #090909;
+            /* Text color */
+            text-decoration: none;
+            /* Remove underline */
+            font-size: 24px;
+            /* Font size */
+            margin: 0 20px;
+            /* Add margin between links */
+            transition: all 0.3s ease;
+            /* Smooth transition */
+            padding: 10px 20px;
+            /* Add padding to buttons */
+            border-radius: 10px;
+            /* Round corners */
+            overflow: hidden;
+            /* Hide overflow */
+            font-weight: bold;
+            /* Make text bold */
+        }
+
+        .navbar a:hover {
+            color: pink;
+            /* Change underline color */
+            text-decoration: none;
+            /* Remove default underline */
+            position: relative;
+            /* Position relative for the pseudo-element */
+        }
+
+        .navbar a:hover::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 100%;
+            height: 2px;
+            background-color: pink;
+            /* Underline color on hover */
+        }
+
+        .container {
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80%;
+            margin-top: 100px;
+            /* Adjust top margin as needed */
+        }
+
+        .left-section,
+        .right-section {
+            width: 45%;
+            text-align: center;
+            /* Center text horizontally */
+            margin: 0 auto;
+            /* Center container horizontally */
+        }
+
+        #typingText {
+            margin-top: 30px;
+            font-size: 55px;
+            /* Increase font size */
+            font-family: monospace;
+            border-right: 2px solid #fff;
+            /* Typing cursor effect */
+            padding-right: 10px;
+            /* Typing cursor effect */
+            animation: blink-caret 0.75s infinite alternate;
+            /* Typing cursor effect */
+        }
+
+        @keyframes blink-caret {
+            to {
+                visibility: hidden;
+            }
+        }
+
+        .buttons-container {
+            margin-top: 100px;
+            /* Adjust top margin as needed */
+        }
+
+        .button {
+            padding: 15px 40px;
+            /* Increase button size */
+            margin-left: 20px;
+            font-size: 24px;
+            /* Increase button font size */
+            background-color: #0944f4;
+            /* Dark black background */
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            /* Round corners */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0c0c0c;
+            /* Darken on hover */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+
+        <a href="{% url 'cover' %}">Cover Letter Generator</a>
+
+
+        {% if user.is_authenticated %}
+        <span style="font-weight: bold;">Welcome, {{ user.username }}</span>
+        {% endif %}
+    </div>
+
+    <div class="container">
+        <div class="left-section">
+            <div class="typing-container">
+                <h1>On Our Website, We Include: </h1>
+                <h2 id="typingText"></h2>
+            </div>
+        </div>
+        <div class="right-section">
+            <div class="buttons-container">
+                {% if user.is_authenticated %}
+                <form method="post" action="/accounts/logout/">
+                    {% csrf_token %}
+                    <button type="submit" class="button">Logout</button>
+                </form>
+                {% else %}
+                <button class="button" onclick="window.location.href='/accounts/login/'">Login</button>
+                <button class="button" onclick="window.location.href='/accounts/signup/'">Sign Up</button>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const names = ["Cover Letter Generator", "Deep Learning", "TensorFlow", "Sequence By Sequence Technique", "Django Backend", "Web Development", "Jupyter Notebook", "Python", "Data Pre-Processing"];
+        let currentIndex = 0;
+        const typingTextElement = document.getElementById("typingText");
+
+        function typeText(text, index) {
+            if (index < text.length) {
+                typingTextElement.textContent += text[index];
+                index++;
+                setTimeout(() => {
+                    typeText(text, index);
+                }, 200); // Adjust the delay here (in milliseconds)
+            } else {
+                // Animation finished, clear text and start typing next name
+                setTimeout(() => {
+                    typingTextElement.textContent = "";
+                    currentIndex = (currentIndex + 1) % names.length;
+                    typeText(names[currentIndex], 0);
+                }, 1000); // Delay before starting next name (adjust as needed)
+            }
+        }
+
+        // Start typing the first name when the page loads
+        window.onload = function () {
+            typeText(names[currentIndex], 0);
+        };
+    </script>
+</body>
+
+</html>

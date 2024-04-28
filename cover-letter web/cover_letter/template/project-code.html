@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Snippets</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.9.0/styles/default.min.css">
+    <style>
+        /* Updated CSS Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #080707;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 20px 200px;
+            font-size: 16px;
+            border: 1px solid #0510dc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            margin-right: 10px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .search-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background-color: #f4112c;
+        }
+
+        .snippet {
+            background-color: #07eedb;
+            border: 1px solid #eb0808;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .snippet h2 {
+            color: #000302;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .section {
+            color: #541d1d;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        pre {
+            background-color: #f0ab09;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .copy-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background-color: #45a049;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            color: #333;
+            padding: 8px 16px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .pagination a:hover {
+            background-color: #f60606;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Code Snippets</h1>
+        <div class="search-container">
+            <form method="GET" action="{% url 'project-code' %}">
+                <input type="text" name="q" class="search-input" placeholder="Search for snippets..">
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+        </div>
+        <div id="snippet-container">
+            {% for snippet in snippets %}
+            <div class="snippet">
+                <h2>{{ snippet.title }}</h2>
+                <p class="section">Section: {{ snippet.section }}</p>
+                <pre><code class="python">{{ snippet.code|safe }}</code></pre>
+                <button class="copy-btn" onclick="copyToClipboard(this)">Copy Code</button>
+                <pre>{{ snippet.explanation|safe }}</pre>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="pagination">
+            {% if snippets.has_previous %}
+            <a
+                href="?page={{ snippets.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
+            {% endif %}
+            {% for i in snippets.paginator.page_range %}
+            <a href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+                class="{% if snippets.number == i %}active{% endif %}">{{ i }}</a>
+            {% endfor %}
+            {% if snippets.has_next %}
+            <a
+                href="?page={{ snippets.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.9.0/highlight.min.js"></script>
+    <script>
+        // JavaScript for syntax highlighting
+        document.addEventListener('DOMContentLoaded', function () {
+            // Syntax highlighting
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+            });
+        });
+
+        // Copy to clipboard function (defined in global scope)
+        function copyToClipboard(btn) {
+            const codeBlock = btn.previousElementSibling.querySelector('code');
+            if (codeBlock) {
+                const textArea = document.createElement('textarea');
+                textArea.value = codeBlock.innerText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                btn.innerText = 'Copied!';
+                setTimeout(function () {
+                    btn.innerText = 'Copy Code';
+                }, 2000);
+            } else {
+                console.error('Code block not found.');
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Outputs</title>
+    <style>
+        /* CSS styles for modal */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #080707;
+
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 80%;
+            height: 80%;
+            overflow: auto;
+            background-color: rgba(244, 10, 10, 0.9);
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+        }
+
+        /* CSS styles for image grid */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #c6bf58;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .image-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .image-item {
+            width: 18%;
+            margin-bottom: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .image-item img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .image-details {
+            display: none;
+            padding: 20px;
+            border: 1px solid #0e0101;
+            border-radius: 5px;
+            background-color: #e9d6d6;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            width: calc(100% - 40px);
+            z-index: 1;
+        }
+
+        .image-item:hover .image-details {
+            display: block;
+        }
+
+        .image-item img:hover {
+            opacity: 0.8;
+            /* Reduce opacity when hovering over image */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Project Outputs</h1>
+        <ul class="image-list">
+            {% for output in outputs %}
+            <li class="image-item" onclick="openModal('{{ output.output_image.url }}')"
+                title="{{ output.output_name }}">
+                <img src="{{ output.output_image.url }}" alt="{{ output.output_name }}">
+                <div class="image-details">
+                    <h2>{{ output.output_name }}</h2>
+                    <p>Description: {{ output.output_description }}</p>
+                    <!-- Add additional details here -->
+                </div>
+            </li>
+            {% empty %}
+            <li>No project outputs available.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal" onclick="closeModal()">
+        <span class="modal-content">
+            <img id="fullImg" src="" alt="">
+        </span>
+    </div>
+
+    <script>
+        // Open the Modal
+        function openModal(imgUrl) {
+            var modal = document.getElementById("myModal");
+            var fullImg = document.getElementById("fullImg");
+            fullImg.src = imgUrl;
+            modal.style.display = "block";
+        }
+
+        // Close the Modal
+        function closeModal() {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        }
+    </script>
+</body>
+
+</html>
